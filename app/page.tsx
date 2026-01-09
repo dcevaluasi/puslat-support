@@ -20,7 +20,7 @@ export default function Home() {
     {
       title: "Penggunaan Ruang Rapat",
       description: "Reservasi dan jadwal ruang rapat",
-      href: "/ruang-rapat",
+      href: "/dashboard/meeting-room/activity",
       icon: DoorOpen,
       gradient: "from-blue-600 to-indigo-600"
     }
