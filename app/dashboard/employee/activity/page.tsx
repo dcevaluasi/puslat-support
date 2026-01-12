@@ -71,24 +71,21 @@ export default function DashboardPage() {
     const [endDate, setEndDate] = useState('');
 
     const filteredActivities = useMemo(() => {
-        if (!startDate && !endDate) return activities;
+        if (!startDate) return activities;
+
+        const filterDate = new Date(startDate);
+        filterDate.setHours(0, 0, 0, 0);
 
         return activities.filter(activity => {
             const activityStart = new Date(activity.tanggalDari);
             const activityEnd = new Date(activity.tanggalSampai);
-            const filterStart = startDate ? new Date(startDate) : null;
-            const filterEnd = endDate ? new Date(endDate) : null;
+            activityStart.setHours(0, 0, 0, 0);
+            activityEnd.setHours(0, 0, 0, 0);
 
-            if (filterStart && filterEnd) {
-                return activityStart <= filterEnd && activityEnd >= filterStart;
-            } else if (filterStart) {
-                return activityEnd >= filterStart;
-            } else if (filterEnd) {
-                return activityStart <= filterEnd;
-            }
-            return true;
+            // Hanya tampilkan aktivitas yang sedang berlangsung pada tanggal yang dipilih
+            return filterDate >= activityStart && filterDate <= activityEnd;
         });
-    }, [activities, startDate, endDate]);
+    }, [activities, startDate]);
 
     const stats = useMemo(() => {
         const statusCounts = filteredActivities.reduce((acc, activity) => {
