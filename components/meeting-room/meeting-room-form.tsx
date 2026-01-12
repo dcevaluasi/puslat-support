@@ -134,7 +134,12 @@ export function MeetingRoomForm({ onSubmit, ruangRapat, trigger }: RuangRapatFor
                             <Label htmlFor="status" className="text-gray-700 font-medium">Status</Label>
                             <Select
                                 value={formData.status}
-                                onValueChange={(value) => setFormData({ ...formData, status: value })}
+                                onValueChange={(value) =>
+                                    setFormData({
+                                        ...formData,
+                                        status: value as "Tersedia" | "Tidak Tersedia" | "Dalam Perbaikan"
+                                    })
+                                }
                             >
                                 <SelectTrigger className="border-gray-300 focus:border-blue-500 w-full">
                                     <SelectValue />
