@@ -1,19 +1,21 @@
 "use client";
 
 import { useEmployees } from '@/hooks/use-employees';
+import { useTeams } from '@/hooks/use-teams';
 import { EmployeeForm } from '@/components/employee/employee-form';
 import { EmployeeTable } from '@/components/employee/employee-table';
 import { ImportExcel } from '@/components/employee/import-excel';
 import { DeleteAll } from '@/components/employee/delete-all';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Loader2, ClipboardList } from 'lucide-react';
+import { Users, Loader2, ClipboardList, Users2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Home() {
     const { employees, loading, create, update, remove, bulkImport, deleteAll } = useEmployees();
+    const { teams, loading: teamsLoading } = useTeams();
 
-    if (loading) {
+    if (loading || teamsLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
                 <div className="text-center space-y-4">
@@ -47,7 +49,7 @@ export default function Home() {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <Card className="border-l-4 border-l-cyan-500 shadow-sm hover:shadow-md transition-shadow bg-white">
                         <CardHeader className="pb-3">
                             <CardDescription className="text-cyan-700">Total Pegawai</CardDescription>
@@ -72,11 +74,22 @@ export default function Home() {
                             </CardTitle>
                         </CardHeader>
                     </Card>
+                    <Card className="border-l-4 border-l-purple-500 shadow-sm hover:shadow-md transition-shadow bg-white">
+                        <CardHeader className="pb-3">
+                            <CardDescription className="text-purple-700 flex items-center gap-2">
+                                <Users2 className="h-4 w-4" />
+                                Total Tim Kerja
+                            </CardDescription>
+                            <CardTitle className="text-3xl text-purple-600">
+                                {teams.length}
+                            </CardTitle>
+                        </CardHeader>
+                    </Card>
                 </div>
 
                 <Card className="shadow-lg border-0">
                     <CardHeader className="bg-gradient-to-r from-cyan-500 to-teal-600 text-white rounded-t-lg">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2 py-4">
                             <div>
                                 <CardTitle className="text-2xl">Daftar Pegawai</CardTitle>
                                 <CardDescription className="text-cyan-100 mt-1">
@@ -84,14 +97,14 @@ export default function Home() {
                                 </CardDescription>
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                <ImportExcel onImport={bulkImport} />
+                                <ImportExcel onImport={bulkImport} teams={teams} />
                                 <DeleteAll onDeleteAll={deleteAll} count={employees.length} />
-                                <EmployeeForm onSubmit={create} />
+                                <EmployeeForm onSubmit={create} teams={teams} />
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent className="p-0">
-                        <EmployeeTable employees={employees} onUpdate={update} onDelete={remove} />
+                    <CardContent className="p-4">
+                        <EmployeeTable employees={employees} onUpdate={update} onDelete={remove} teams={teams} />
                     </CardContent>
                 </Card>
             </div>

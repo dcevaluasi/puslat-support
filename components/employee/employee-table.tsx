@@ -1,11 +1,12 @@
 "use client";
 
 import { Employee } from '@/types/employee';
+import { Team } from '@/hooks/use-teams';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { EmployeeForm } from './employee-form';
-import { Pencil, Trash2, User, FileText, Award } from 'lucide-react';
+import { Pencil, Trash2, User, FileText, Award, Users2 } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -23,9 +24,10 @@ interface EmployeeTableProps {
     employees: Employee[];
     onUpdate: (id: string, data: Partial<Employee>) => Promise<void>;
     onDelete: (id: string) => Promise<void>;
+    teams: Team[];
 }
 
-export function EmployeeTable({ employees, onUpdate, onDelete }: EmployeeTableProps) {
+export function EmployeeTable({ employees, onUpdate, onDelete, teams }: EmployeeTableProps) {
     const handleDelete = async (id: string, nama: string) => {
         try {
             await onDelete(id);
@@ -37,6 +39,12 @@ export function EmployeeTable({ employees, onUpdate, onDelete }: EmployeeTablePr
                 description: 'Terjadi kesalahan saat menghapus data.',
             });
         }
+    };
+
+    const getTeamName = (timKerjaId?: string) => {
+        if (!timKerjaId) return '-';
+        const team = teams.find(t => t.id === timKerjaId);
+        return team?.nama || '-';
     };
 
     if (employees.length === 0) {
@@ -76,6 +84,12 @@ export function EmployeeTable({ employees, onUpdate, onDelete }: EmployeeTablePr
                                 Pangkat
                             </div>
                         </TableHead>
+                        <TableHead className="font-semibold text-gray-700">
+                            <div className="flex items-center gap-2">
+                                <Users2 className="h-4 w-4 text-purple-600" />
+                                Tim Kerja
+                            </div>
+                        </TableHead>
                         <TableHead className="text-right font-semibold text-gray-700">Aksi</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -95,11 +109,21 @@ export function EmployeeTable({ employees, onUpdate, onDelete }: EmployeeTablePr
                                 </Badge>
                             </TableCell>
                             <TableCell className="text-gray-700">{employee.pangkat}</TableCell>
+                            <TableCell>
+                                {employee.timKerjaId ? (
+                                    <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                                        {getTeamName(employee.timKerjaId)}
+                                    </Badge>
+                                ) : (
+                                    <span className="text-gray-400 text-sm">-</span>
+                                )}
+                            </TableCell>
                             <TableCell className="text-right">
                                 <div className="flex items-center justify-end gap-2">
                                     <EmployeeForm
                                         employee={employee}
                                         onSubmit={(data) => onUpdate(employee.id!, data)}
+                                        teams={teams}
                                         trigger={
                                             <Button variant="outline" size="icon" className="border-teal-200 text-teal-600 hover:bg-teal-50 hover:text-teal-700">
                                                 <Pencil className="h-4 w-4" />

@@ -5,6 +5,7 @@ export interface Employee {
   nip: string
   golongan: string
   pangkat: string
+  timKerjaId?: string
 }
 
 export type ActivityStatus =

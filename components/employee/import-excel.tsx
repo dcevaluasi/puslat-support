@@ -6,10 +6,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Upload, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { Employee } from '@/types/employee';
+import { Team } from '@/hooks/use-teams';
 import { toast } from 'sonner';
 
 interface ImportExcelProps {
     onImport: (data: Omit<Employee, 'id'>[]) => Promise<void>;
+    teams: Team[];
 }
 
 interface ExcelRow {
@@ -23,11 +25,19 @@ interface ExcelRow {
     Golongan?: string;
     pangkat?: string;
     Pangkat?: string;
+    timKerja?: string;
+    'Tim Kerja'?: string;
 }
 
-export function ImportExcel({ onImport }: ImportExcelProps) {
+export function ImportExcel({ onImport, teams }: ImportExcelProps) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const findTeamIdByName = (teamName?: string): string => {
+        if (!teamName) return '';
+        const team = teams.find(t => t.nama.toLowerCase() === teamName.toLowerCase());
+        return team?.id || '';
+    };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -38,7 +48,7 @@ export function ImportExcel({ onImport }: ImportExcelProps) {
             const data = await file.arrayBuffer();
             const workbook = XLSX.read(data);
             const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet) as ExcelRow[];
+            const jsonData = XLSX.utils.sheet_to_json<ExcelRow>(worksheet);
 
             const employees: Omit<Employee, 'id'>[] = jsonData.map((row) => ({
                 nama: row.nama || row.Nama || '',
@@ -46,14 +56,13 @@ export function ImportExcel({ onImport }: ImportExcelProps) {
                 nip: String(row.nip || row.NIP || ''),
                 golongan: row.golongan || row.Golongan || '',
                 pangkat: row.pangkat || row.Pangkat || '',
+                timKerjaId: findTeamIdByName(row.timKerja || row['Tim Kerja']),
             }));
 
             await onImport(employees);
-
             toast.success('Import Berhasil!', {
                 description: `${employees.length} data pegawai berhasil diimport.`,
             });
-
             setOpen(false);
         } catch (error) {
             toast.error('Import Gagal!', {
@@ -82,6 +91,8 @@ export function ImportExcel({ onImport }: ImportExcelProps) {
                     </div>
                     <DialogDescription className="pt-4">
                         Format Excel harus memiliki kolom: <strong>nama, pegawai, nip, golongan, pangkat</strong>
+                        <br />
+                        <span className="text-sm text-gray-500">Opsional: <strong>timKerja</strong> (nama tim)</span>
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-4">
