@@ -148,7 +148,7 @@ export function EmployeeForm({ onSubmit, employee, trigger, teams }: EmployeeFor
                             value={formData.timKerjaId || "none"}
                             onValueChange={(value) => setFormData({ ...formData, timKerjaId: value === "none" ? undefined : value })}
                         >
-                            <SelectTrigger className="border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
+                            <SelectTrigger className="border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 w-full">
                                 <SelectValue placeholder="Pilih Tim Kerja (Opsional)" />
                             </SelectTrigger>
                             <SelectContent>
