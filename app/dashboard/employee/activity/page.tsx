@@ -361,10 +361,10 @@ export default function DashboardPage() {
                     <CardContent className="pt-8 pb-8 px-8 bg-white">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {stats.teamStats.map((team) => (
-                                <div key={team.teamId} className="p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all">
+                                <div key={team.teamId} className="p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
                                     <div className="flex items-center justify-between mb-3">
                                         <h3 className="font-semibold text-gray-900">{team.teamName}</h3>
-                                        <Badge variant="outline" className="bg-purple-50 text-blue-700 border-blue-200">
+                                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                                             {team.total} Pegawai
                                         </Badge>
                                     </div>
@@ -379,7 +379,7 @@ export default function DashboardPage() {
                                         </div>
                                         <div className="w-full bg-gray-100 rounded-full h-2 mt-3">
                                             <div
-                                                className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all"
+                                                className="h-full bg-gradient-to-r from-blue-400 to-blue-500 rounded-full transition-all"
                                                 style={{ width: `${team.total > 0 ? (team.available / team.total * 100) : 0}%` }}
                                             />
                                         </div>
