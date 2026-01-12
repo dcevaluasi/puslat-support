@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Package, Users, DoorOpen } from "lucide-react";
 
 export default function Home() {
+  // Menus
   const menus = [
     {
       title: "Peminjaman BMN",
