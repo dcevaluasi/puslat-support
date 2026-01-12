@@ -67,8 +67,10 @@ export default function DashboardPage() {
     const { activities, loading: loadingActivities } = useActivities();
     const { employees, loading: loadingEmployees } = useEmployees();
 
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [startDate, setStartDate] = useState(() => {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    }); const [endDate, setEndDate] = useState('');
 
     const filteredActivities = useMemo(() => {
         if (!startDate) return activities;
